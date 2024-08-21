@@ -16,6 +16,9 @@ class Game:
         self.red_font = utils.Font('Images/medium-font.png', (255,0,50))
         self.blue_font = utils.Font('Images/medium-font.png', (0,100,255))
 
+        self.assets = {
+                }
+
         self.coins = 0
         self.display_coins = 0
 
@@ -38,6 +41,11 @@ class Game:
         self.game_speed = 1
         self.hi_score = 0
 
+        pygame.mixer.music.load('Assets/Sounds/CoolSong.wav')
+        pygame.mixer.music.play(loops=-1)
+        self.last_music_pos = 0
+        self.paused_music_pos = 0
+
     def restart(self):
         self.game_speed = 1
         self.player = entities.Player((self.display.get_width()/2, self.display.get_height()/2), (8,1), 1, (255,255,255))
@@ -53,11 +61,25 @@ class Game:
         self.boulder = entities.Boulder((30, 30), (20,1), 0.5, (100,100,100))
         self.boulder.velocity[0] = random.randint(-100,100)/100
         self.boulder.velocity[1] = random.randint(-100,100)/100
+        pygame.mixer.music.play()
+        self.last_music_pos = 0
+        self.paused_music_pos = 0
 
     def run(self):
         while True:
             self.display.fill((0,0,0))
             self.boulder_ticks += 1 * self.game_speed
+
+            if self.game_speed == 0:
+                if self.last_music_pos != pygame.mixer.music.get_pos():
+                    pygame.mixer.music.pause()
+                    self.paused_music_pos = pygame.mixer.music.get_pos()
+            else:
+                if self.last_music_pos == pygame.mixer.music.get_pos():
+                    pygame.mixer.music.play()
+                    #SET POSITION WHEN PAUSED NOT WORKING YET!!!
+                    #pygame.mixer.music.set_pos(self.paused_music_pos)
+            self.last_music_pos = pygame.mixer.music.get_pos()
 
             self.display_coins += (self.coins - self.display_coins)/2 * self.game_speed
             self.display_hp += (self.hp - self.display_hp)/2 * self.game_speed

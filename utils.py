@@ -7,6 +7,10 @@ def load_image(path):
     img.set_colorkey((0,0,0))
     return img
 
+def load_sound(path):
+    sound = pygame.mixer.Sound(BASE_PATH + path)
+    return sound
+
 def clip(surface, position, size):
     surface_2 = surface.copy()
     clip_rect = pygame.Rect(position[0], position[1], size[0], size[1])
