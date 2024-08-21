@@ -91,6 +91,9 @@ class Game:
                 self.coins += 100
                 self.coin.random_pos((0, self.display.get_width(), 11, self.display.get_height()))
 
+                self.boulder.velocity[0] += (self.player.pos[0] - self.boulder.pos[0])/300
+                self.boulder.velocity[1] += (self.player.pos[1] - self.boulder.pos[1])/300
+
             if self.boulder_ticks >= 15:
                 self.boulder_ticks = 0
                 random_color = random.randint(100,150)
