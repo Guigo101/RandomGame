@@ -1,4 +1,4 @@
-import pygame
+import pygame, math
 
 BASE_PATH = 'Assets/'
 

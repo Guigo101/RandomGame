@@ -22,7 +22,9 @@ class Game:
         self.blue_font = utils.Font('Images/medium-font.png', (0,100,255))
 
         self.assets = {
-                }
+            'bling': utils.load_sound('Sounds/bling.wav'),
+            'rock': utils.load_sound('Sounds/rock.wav'),
+        }
 
         self.coins = 0
         self.display_coins = 0
@@ -31,6 +33,7 @@ class Game:
         self.hp = 100
         self.display_hp = 0
         self.move = [False, False, False, False]
+        self.phit_parts = []
 
         self.boulder = entities.Boulder((30, 30), (20,1), 0.5, (100,100,100))
         self.boulder.velocity[0] = random.randint(-100,100)/100
@@ -69,6 +72,7 @@ class Game:
         pygame.mixer.music.play()
         self.last_music_pos = 0
         self.paused_music_pos = 0
+        self.phit_parts = []
 
     def run(self):
         while True:
@@ -97,7 +101,7 @@ class Game:
 
             self.boulder.update((0,0), self.game_speed)
             self.boulder.render(self.display)
-            self.boulder.check_borders((0, self.display.get_width(), 11, self.display.get_height()), 0.1, 100)
+            self.boulder.check_borders((0, self.display.get_width(), 11, self.display.get_height()), 0.1, 100, self.assets['rock'])
 
             self.coin.update((0,0), self.game_speed)
             self.coin.render(self.display)
@@ -110,16 +114,22 @@ class Game:
             if self.player.rect().colliderect(self.boulder.rect()) and self.player.protected != True:
                 self.player.survive_frames = 60
                 self.hp = max(0, self.hp - 25)
+                for i in range(4):
+                    self.phit_parts.append(particle.Particle(self.player.pos, (random.randint(-5,5)/10, random.randint(-5,5)/10), (255,0,0), [5,1], 1, 0.01))
+
+                self.assets['rock'].play()
 
             if self.player.rect().colliderect(self.coin.rect()):
                 for i in range(random.randint(3,5)):
                     self.coin_particles.append(particle.Particle(self.coin.pos, (random.randint(-2,2), random.randint(-2,2)), (200,200,0), [random.randint(3,5), 1], 1, 0))
-
+                
                 self.coins += 100
                 self.coin.random_pos((0, self.display.get_width(), 11, self.display.get_height()))
 
                 self.boulder.velocity[0] += (self.player.pos[0] - self.boulder.pos[0])/300
                 self.boulder.velocity[1] += (self.player.pos[1] - self.boulder.pos[1])/300
+
+                self.assets['bling'].play()
 
             if self.boulder_ticks >= 15:
                 self.boulder_ticks = 0
@@ -147,7 +157,19 @@ class Game:
                     self.coin_particles.remove(part)
                     part = None
                     del part
-            
+           
+            for part in self.phit_parts:
+                part.update(self.game_speed)
+                part.render(self.display, (0, 0), (0,0,0))
+
+                part.velocity[0] += (0 - part.velocity[0])/15 * self.game_speed
+                part.velocity[1] += (0 - part.velocity[1])/15 * self.game_speed
+
+                if part.size[0] <= 0:
+                    self.phit_parts.remove(part)
+                    part = None
+                    del part
+
             self.hi_score = max(self.hi_score, self.coins)
 
             if self.hp <= 0:

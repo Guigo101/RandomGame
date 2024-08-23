@@ -25,19 +25,27 @@ class Boulder(Entity):
     def __init__(self, position, size=(8, 8), speed=1, color=(255,255,255)):
         super().__init__(position, size, speed, color)
 
-    def check_borders(self, borders=(0,100,0,100), speed_increase=0, max_speed=3):
+    def check_borders(self, borders=(0,100,0,100), speed_increase=0, max_speed=3, sound=None):
         if self.pos[0] < borders[0]:
             self.velocity[0] *= -1
             self.speed = min(max_speed, self.speed + speed_increase)
+            if sound:
+                sound.play()
         if self.pos[0] > borders[1] - self.size[0]:
             self.velocity[0] *= -1
             self.speed = min(max_speed, self.speed + speed_increase)
+            if sound:
+                sound.play()
         if self.pos[1] < borders[2]:
             self.velocity[1] *= -1
             self.speed = min(max_speed, self.speed + speed_increase)
+            if sound:
+                sound.play()
         if self.pos[1] > borders[3] - self.size[0]:
             self.velocity[1] *= -1
             self.speed = min(max_speed, self.speed + speed_increase)
+            if sound:
+                sound.play()
 
 class Player(Entity):
     def __init__(self, position, size=(8, 8), speed=1, color=(255, 255, 255)):
