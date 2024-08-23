@@ -1,6 +1,11 @@
 import pygame, sys, random
 import utils, Scripts.entities as entities, Scripts.particle as particle
 
+#TODO:
+# ADD SCREENSHAKE
+# ADD MORE PARTICLES
+# - ESPECIALLY FOR PLAYER GETTING HIT!
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -168,22 +173,22 @@ class Game:
                                 self.game_speed = 1
                         else:
                             self.restart()
-                    if event.key == pygame.K_RIGHT:
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_l:
                         self.move[0] = True
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_h:
                         self.move[1] = True
-                    if event.key == pygame.K_DOWN:
+                    if event.key == pygame.K_DOWN or event.key == pygame.K_j:
                         self.move[2] = True
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_UP or event.key == pygame.K_k:
                         self.move[3] = True
                 if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_RIGHT:
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_l:
                         self.move[0] = False
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_h:
                         self.move[1] = False
-                    if event.key == pygame.K_DOWN:
+                    if event.key == pygame.K_DOWN or event.key == pygame.K_j:
                         self.move[2] = False
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_UP or event.key == pygame.K_k:
                         self.move[3] = False
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
